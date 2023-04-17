@@ -1,34 +1,3 @@
-<?php
-
-if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    $uploadDir = 'uploads/';
-    $uploadFile = $uploadDir . basename($_FILES['avatar']['name']);
-    $extension = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
-    $authorizedExtensions = ['jpg', 'png', 'gif', 'webp'];
-    $newFileName = uniqid(basename($_FILES['avatar']['name']), $extension);
-    $maxFileSize = 1000000;
-
-
-    if ((!in_array($extension, $authorizedExtensions))) {
-        $errors[] = 'Veuillez sélectionner une image de type Jpg, Png, Gif ou Webp !';
-    }
-
-    if (file_exists($_FILES['avatar']['tmp_name']) && filesize($_FILES['avatar']['tmp_name']) > $maxFileSize) {
-        $errors[] = "Votre fichier doit faire moins de 1M !";
-    }
-
-    if (!empty($errors)) {
-        foreach ($errors as $error) {
-            echo $error;
-        }
-    } else {
-        $filePath = $uploadDir . $newFileName;
-        move_uploaded_file($_FILES['avatar']['tmp_name'], $filePath);
-    }
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,15 +9,27 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 </head>
 
 <body>
-    <form method="post" enctype="multipart/form-data">
-        <label for="imageUpload">Uploader votre photo</label><br>
-        <input type="file" name="avatar" id="imageUpload" /><br>
-        <button name="send">Send</button>
+    <form action="result.php" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="imageUpload">Uploader votre photo</label><br>
+            <input type="file" name="avatar" id="imageUpload" /><br>
+        </div>
+
+        <div>
+            <label for="nom">LastName :</label>
+            <input type="text" id="nom" name="user_name" required>
+        </div>
+
+        <div>
+            <label for="prenom">FirstName :</label>
+            <input type="text" id="prenom" name="user_firstname" required>
+        </div>
+
+        <div>
+            <button name="send">Send</button>
+        </div>
     </form>
 
-    <div>
-        <img src="<?= $filePath ?>" alt="Homer image">
-    </div>
 </body>
 
 </html>
